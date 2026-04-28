@@ -52,5 +52,46 @@ This proves that the monday csv is more of an intro to the dataset, no value's m
 Concerns:
 As much as I love 'Flow Duration', 'Flow IAT Mean, 'Fwd IAT Total', this dataset would be alot more significantly impactful 
 against attacks if we had actual timestamps to work with. Timestamps can help us accurately spot 'temporal pattern analysis'. Where we can spot and location potential patterns and determine when were most likely to be attacked.
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+Goal: Open, Compare and Observe each CSV file seperately, organize each file in it's own designated folder based on the day.
+
+#  Observation
+1. First I noticed how big these files were seperated let alone all together.
+2. Compared to monday that was all BENIGN I began to see more and more potential and imtiment attacks.
+(DdoS), (Brute Force), (PortScan), (DoS Hulk), (DoS GoldenEye) (DoS slowloris), (DoS Slowhttptest), (Heartbleed)
+3. Wednesday had some of the most interesting attacks and labels compared to the rest of the days. (692703) values.
+I certainly feel as if this one will be the largest of the rest.
+
+Analysis: The next step is to pedict how well a ML model can predict such attacks based on using the the dataset provided.
+
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+# ML Monday-Friday
+Date: April 26, 2026
+
+Goal: Simple Random Forest Tree (Mon-Fri) comparison.
+
+# Observation
+1. I was not expecting a 'Random Forest Tree' method would be so accurate in its perdictions. At first Monday seemed
+to experience a perfect result predicting rate of a 100%. I first believed it to be accruate due to Monday beeing
+entirely BENIGN, so I went foward with Tuesday to see if the same anomoly would continue. Tuesday also came in at 100%
+accuracy. At first I thought I was experencing 'data leakage' with how well the model was originally doing. I first
+ensured that my X and Y values were in the correct position in my 'TrainTestSplit' model. Came back good. Then made sure my 
+X_train and X_test values were both coming back as '<class 'numpy.ndarray'>' to ensure there was no class error issue. There wasnt.
+
+2. I was expecting more of a delay in my outputs when testing the results of my models. The slowest at 58.6 seconds and the shortest 
+being Monday at 1.2 seconds. I can certainly perdict that when putting the models together using 'concat' the model prediction is going
+to take much longer, also limiting the accuracy of 'Random Forest Tree' and 'XGBOOST' will increase the odds of my prediction but make the process
+drastically slower to output.
+
+Analysis: So far Random Forest Tree has been able to accurate predict potential threats based on traffic information to determine what is an attack
+or not.
+
+Concerns: How well will it be able to keep up, later how well will I be able to predict which ports are most likely to be attacked.
 
 ----------------------------------------------------------------------------------------------------------------------------------
