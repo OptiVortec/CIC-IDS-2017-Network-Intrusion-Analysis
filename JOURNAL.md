@@ -97,3 +97,146 @@ or not.
 Concerns: How well will it be able to keep up, later how well will I be able to predict which ports are most likely to be attacked.
 
 ----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+# XGBOOST
+Date: April 27, 2026
+
+Goal: Set up XGBOOST for comparison against RFC
+
+# Observation:
+1. First observation was XGBOOST speed was much faster than RFC whcih was the exactly opposite of what I was expecting for this dataset.
+the fastest being 0.8 seconds ('Monday-WorkingHours.pcap_ISCX.csv') XGBOOST compared to RFC with 1.5 seconds.
+
+2. XGBOOST was for the most part on part with RFC in these datasets, however I actually saw significant reductions in proability when 
+it came to the hardest data set. 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' main issues being 
+'Web Attack � Sql Injection' from my observation based on the recall scores being the lowest, its a sign that the actual attacks are being constantly missed, its directly from both not enough data to fight against it and that the data doesnt
+drastically change enough for the data to truly respond against it.
+
+3. Infiltration however, actually improved slightly better compared the RFC while using XGBOOST. 
+
+4. Surprisingly enough, heartbleed on 'Wednesday-workingHours.pcap_ISCX.csv' only has 11 cases in that entire dataset however both 
+RFC and XGBOOST was able to detect it in each model so well.
+Conclusion on heartbleed: 
+Even though its only 11 cases, from futher investigation on 'Wednesday-workingHours.pcap_ISCX.csv' heartbleed
+only seems to attack port 444 with zero variation to other ports. this is becuase heart bleed is a bug in SSL/TLS encryption. It sends a small "heartbeat" request to a server but lies about how big it is, tricking the server to send back more data than it should. This leaks the server memory which may contain passwords, keys and sensitive data. This is why websites show look into becoming SSL (Secure Socket Layer) which not only protects the website but its users as well. 
+
+Solution:
+If SSL is not available, or there are too many users on the network, implementing an idle timeout that logs users out can help reduce active connections, protecting both the user and the network from Heartbleed attacks.
+                 
+                         XGBOOST                                                            RANDOM FOREST CLASSIFIER
+                                        'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv'
+
+-Fold--
+              precision    recall  f1-score   support                                precision    recall  f1-score   support
+
+
+           0       1.00      1.00      1.00     33611                             0       1.00      1.00      1.00     33632
+           1       0.73      0.84      0.78       301                             1       0.73      0.81      0.77       273
+           2       1.00      0.80      0.89         5                             2       1.00      0.20      0.33         5
+           3       0.45      0.29      0.35       130                             3       0.49      0.35      0.41       137
+
+    accuracy                           1.00     34047                      accuracy                           1.00     34047
+   macro avg       0.80      0.73      0.76     34047                     macro avg       0.81      0.59      0.63     34047
+weighted avg       1.00      1.00      1.00     34047                  weighted avg       1.00      1.00      1.00     34047
+
+-Fold--
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     33610
+           1       0.76      0.84      0.80       302
+           2       0.80      1.00      0.89         4
+           3       0.50      0.35      0.41       130
+
+    accuracy                           1.00     34046
+   macro avg       0.76      0.80      0.78     34046
+weighted avg       1.00      1.00      1.00     34046
+
+-Fold--
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     33610
+           1       0.76      0.82      0.79       302
+           2       1.00      0.50      0.67         4
+           3       0.47      0.38      0.42       130
+
+    accuracy                           1.00     34046
+   macro avg       0.81      0.67      0.72     34046
+weighted avg       1.00      1.00      1.00     34046
+
+-Fold--
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     33610
+           1       0.74      0.79      0.76       301
+           2       1.00      0.50      0.67         4
+           3       0.42      0.34      0.37       131
+
+    accuracy                           1.00     34046
+   macro avg       0.79      0.66      0.70     34046
+weighted avg       1.00      1.00      1.00     34046
+
+-Fold--
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     33610
+           1       0.76      0.81      0.78       301
+           2       1.00      0.50      0.67         4
+           3       0.48      0.39      0.43       131
+
+    accuracy                           1.00     34046
+   macro avg       0.81      0.67      0.72     34046
+weighted avg       1.00      1.00      1.00     34046
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+# SQL-Injection/Infiltration 
+Date: April 28, 2026
+
+Goal: Investigate, SQL-Injection/Infiltration issues.
+
+# Observation: 
+Seeing biggest issue on Thusday's files, file: 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' and Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv ' both SQL-Injection, and 'Infiltration' my reasoning is becuase there isnt enough
+data on these attacks for the model to truly understand them yet/the parameters on the dataset for both SQL injection and , Infilteration are so minut that its hard to predict when the model displays such little different compared to BENIGN more data could help this result.
+
+concat data with all 8 files may help finding more evidence on these two parameters become detectable but im not too hopeful.
+
+dropna was one of my biggest concerns for deleteing too much data that might actually support things like 'Infilteration' and 'SQL-Injection' being detectable however coming from diving into what we were dropping. 'Rows before: 529918 Rows after: 529481' 
+
+After further research, dropna is only removing 437 benign rows from 'Flow Bytes/s' 
+and 'Flow Packets'. 
+
+No attack samples are being lost, so dropna is not 
+contributing to the poor detection of 'Infiltration' and 'SQL-Injection'.
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+#  StratifiedKFold on XGBOOST
+Date: April 29, 2026
+
+Goal: Now with the drastic speed increase added StratifiedKFold with 5 extra folds.
+See if 5 extra folds helps model predict better results. 
+
+#  Observation:
+Overall I was anticipating to either see the model really reflect drastically different results between the 5 folded models especially keeping it at the 80/20 level but shuffling it through 5 different ways to experience new in different data or at least see a gradual improvement as it went on through each fold. Instead it was rather consistent espeically with most of the data being pretting high and consistent throughout most data sets I was more so really paying attention to the difficult csv's such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' which is definetly been the hardest for the model.
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+#  INDEX.MD CREATED 
+Date: April 30, 2026
+
+ Goal: Write through an index to navigate code to user's more easily.
+
+
+----------------------------------------------------------------------------------------------------------------------------------
