@@ -56,6 +56,8 @@ against attacks if we had actual timestamps to work with. Timestamps can help us
 Author: Antonio Gonzalez
 Environment: Python 3.13 | VS Code | Kagglehub
 
+#  Observe Monday-Friday
+
 Goal: Open, Compare and Observe each CSV file seperately, organize each file in it's own designated folder based on the day.
 
 #  Observation
