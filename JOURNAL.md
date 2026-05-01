@@ -291,3 +291,33 @@ Goal: Write through an index to navigate code to users more easily.
 
 
 ----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+*** BIG UPDATE ***
+#  PYTORCH STRESS - Nivida CPU vs MAC GPU via MPS
+Date: May 1st, 2026
+
+
+Goal: Start up pytorch for each individual CSV and compare.
+2nd Goal: Understanding computer internal architeture (creates massive efficency)
+
+# PYTORCH 
+Pytorch is some of the latest modeling open source deep learning framework to date being used on some of the biggest deep learning framework trends to today such as sensors on cars like stop assist, lane assist, and self driving (computer vision), image genoration and speech reconigition. This uses a multi demensional arrays (tensors) Ai platform (deep nueral netowrk) using high performancy parelle computing from both the CPU and the GPU 
+
+The biggest focus to what people love about using it in models is its optimization to improve its satistical modeling while on run time, something I was expecting to see more in XGBOOST. This is called (Dynamic Computation Graph) where  Directed Acylic Graph (DAG) that has functions focus on memorizing executed operations on the tensors allowing you to change size, operation and shape while on each iteration.
+
+# UNEXPECTED FIND
+When running these rather massively larger datasets:
+
+When running these rather larger datasets on something much more elaborate such as Pytorch compared to RFC or XGBOOST, my computer was noticably getting hotter, certainly not in a concerning way or in anyway begining to bottleneck but noticeably hotter. I did notice thatr Pytorch was doing what I thought I would see in XGBOOST where the model performance would drastically improve as each fold progressed. Coming from my results especially with the later days in the week such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' or file 'Thur_WH_M_TORCH' it really wanted nothing to do with 'SQL-Injection' getting a pretty consistent '0.0' accross the board. Overall PYTORCH wasnt more sucessful than the rest, but still consistently got what I believe were more acurate and honest responses. When models predict 100% caught other than on 'Monday's' 100% BENGIN file I'm skeptical to want to believe it where PYTORCH was constistently more around the range of 70-90% accuracy on most thing's if not 100% I'm certinally hoping to see PYTORCH win the end of the race.
+
+# Further Research
+This is probably still the same spekulization as the rest of them where my biggest concerns are that the models will weight the results in an unfair biased sample or scope bias way were it'll see it mostly see that 'BENIGN' is much more massive then anything else. When the model see this it'll understand that being biased to 'BENIGN' will result in a better precision but lack in recall.
+
+# Before running all CSV together:
+I was wondering how the performace of all 8 rather larger CSV's running together would have an effect on either the computer or 
+the performance of the model. So I began to research for effiencies in my pytorch code. It so happens that I was utilizing the code 'NeuralNet(input_size, num_classes)' which is technically correct for the idea of Nividia's CUDA GPU design. However this severly, bottlenecks macs performace. By simply adding '.todevice()' we get mac's full potential. See when we want to utlize both the CPU and Gpu power tfrom Nividia's CUDA design the CPU and GPU are not connected and the code understands this however for a macbook their all together on one logic board system. When running Pytorch on mac without '.to(device)' my GPU isnt working putting all the power on the CPU's cores alone. Pretty impressive the macbook was able to still do the data but a simple extra heat on my lap had me thinking to ask why?
+
+
+----------------------------------------------------------------------------------------------------------------------------------
