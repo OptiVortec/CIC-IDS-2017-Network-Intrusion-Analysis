@@ -321,3 +321,12 @@ the performance of the model. So I began to research for effiencies in my pytorc
 
 
 ----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+#  CONCAT FILES
+Date: May 2nd, 2026
+
+Concat did not help SQL-Injection which proves my theory that this isnt a modeling problem however is a data problem. With 2.8 million rows of data SQL-Injection is just so rare and the dataset shows such little difference in change that its almost impossible for the model to predict. Even proven before that dropna was simply only dropping values that were inf from the values, nothing of value that could benift the data to better predicitng SQL-Injection. However I did notice that, infiltration did go up and improve slighty with concat getting more access of data did infact improve it's chances in the model to be detected.
+
+----------------------------------------------------------------------------------------------------------------------------------
