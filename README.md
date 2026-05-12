@@ -11,9 +11,9 @@ methods to a companies network.
 Index - Classification/Explanation of everything in each folder 
 Types of attacks, Ports, Classification Report meanings.
 
-Jounrnal - Observations and thought process on each step of the way
+Journal - Observations and thought process on each step of the way
 
-Folders - Each folder seperates from RFC, XGBOOST, TORCH 
+Folders - Each folder separates from RFC, XGBOOST, TORCH 
 File organization - DAY _ TIME OF DAY _ ATTACK or MODEL.ipynb
 (You can use this idea to compare each model to the same csv to compare.)
 
@@ -26,7 +26,7 @@ Monday files - Monday files show explanation to all models codes and what they d
 
 2. Multi-Class Classification: Detect malicious patterns like DDoS and Brute Force attacks within high-volume network data.
 
-3. Feature Importance: Which network traffic characteristic are most reliablly a red flag threats of traffick.
+3. Feature Importance: Which network traffic characteristic are most reliably a red flag threats of traffic.
 
 4. Which ports are most affected or likely to be attacked by a certain malicious method.
 

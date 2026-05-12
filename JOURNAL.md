@@ -64,7 +64,7 @@ This proves that the monday csv is more of an intro to the dataset, no value's m
 
 
 Concerns:
-As much as I love 'Flow Duration', 'Flow IAT Mean, 'Fwd IAT Total', this dataset would be alot more significantly impactful
+As much as I love 'Flow Duration', 'Flow IAT Mean, 'Fwd IAT Total', this dataset would be a lot more significantly impactful
 against attacks if we had actual timestamps to work with. Timestamps can help us accurately spot 'temporal pattern analysis'. Where we can spot and locate potential patterns and determine when we're most likely to be attacked.
 ----------------------------------------------------------------------------------------------------------------------------------
 Author: Antonio Gonzalez
@@ -139,7 +139,7 @@ Goal: Set up XGBOOST for comparison against RFC
 the fastest being 0.8 seconds ('Monday-WorkingHours.pcap_ISCX.csv') XGBOOST compared to RFC with 1.5 seconds.
 
 
-2. XGBOOST was for the most part on part with RFC in these datasets, however I actually saw significant reductions in probability when
+2. XGBOOST was for the most part on par with RFC in these datasets, however I actually saw significant reductions in probability when
 it came to the hardest data set. 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' main issues being
 'Web Attack � Sql Injection' from my observation based on the recall scores being the lowest, it's a sign that the actual attacks are being constantly missed, its directly from both not enough data to fight against it and that the data doesn't
 drastically change enough for the data to truly respond against it.
@@ -300,24 +300,24 @@ Date: May 1st, 2026
 
 
 Goal: Start up pytorch for each individual CSV and compare.
-2nd Goal: Understanding computer internal architeture (creates massive efficency)
+2nd Goal: Understanding computer internal architecture (creates massive efficiency)
 
 # PYTORCH 
-Pytorch is some of the latest modeling open source deep learning framework to date being used on some of the biggest deep learning framework trends to today such as sensors on cars like stop assist, lane assist, and self driving (computer vision), image genoration and speech reconigition. This uses a multi demensional arrays (tensors) Ai platform (deep nueral netowrk) using high performancy parelle computing from both the CPU and the GPU 
+Pytorch is some of the latest modeling open source deep learning framework to date being used on some of the biggest deep learning framework trends to today such as sensors on cars like stop assist, lane assist, and self driving (computer vision), image generation and speech recognition. This uses a multi dimensional arrays (tensors) AI platform (deep neural network) using high performance parallel computing from both the CPU and the GPU 
 
-The biggest focus to what people love about using it in models is its optimization to improve its satistical modeling while on run time, something I was expecting to see more in XGBOOST. This is called (Dynamic Computation Graph) where  Directed Acylic Graph (DAG) that has functions focus on memorizing executed operations on the tensors allowing you to change size, operation and shape while on each iteration.
+The biggest focus to what people love about using it in models is its optimization to improve its statistical modeling while on run time, something I was expecting to see more in XGBOOST. This is called (Dynamic Computation Graph) where  Directed Acyclic Graph (DAG) that has functions focus on memorizing executed operations on the tensors allowing you to change size, operation and shape while on each iteration.
 
 # UNEXPECTED FIND
 When running these rather massively larger datasets:
 
-When running these rather larger datasets on something much more elaborate such as Pytorch compared to RFC or XGBOOST, my computer was noticably getting hotter, certainly not in a concerning way or in anyway begining to bottleneck but noticeably hotter. I did notice thatr Pytorch was doing what I thought I would see in XGBOOST where the model performance would drastically improve as each fold progressed. Coming from my results especially with the later days in the week such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' or file 'Thur_WH_M_TORCH' it really wanted nothing to do with 'SQL-Injection' getting a pretty consistent '0.0' accross the board. Overall PYTORCH wasnt more sucessful than the rest, but still consistently got what I believe were more acurate and honest responses. When models predict 100% caught other than on 'Monday's' 100% BENGIN file I'm skeptical to want to believe it where PYTORCH was constistently more around the range of 70-90% accuracy on most thing's if not 100% I'm certinally hoping to see PYTORCH win the end of the race.
+When running these rather larger datasets on something much more elaborate such as Pytorch compared to RFC or XGBOOST, my computer was noticeably getting hotter, certainly not in a concerning way or in anyway begining to bottleneck but noticeably hotter. I did notice that Pytorch was doing what I thought I would see in XGBOOST where the model performance would drastically improve as each fold progressed. Coming from my results especially with the later days in the week such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' or file 'Thur_WH_M_TORCH' it really wanted nothing to do with 'SQL-Injection' getting a pretty consistent '0.0' across the board. Overall PYTORCH wasn't more successful than the rest, but still consistently got what I believe were more accurate and honest responses. When models predict 100% caught other than on 'Monday's' 100% BENIGN file I'm skeptical to want to believe it where PYTORCH was consistently more around the range of 70-90% accuracy on most thing's if not 100% I'm certainly hoping to see PYTORCH win the end of the race.
 
 # Further Research
-This is probably still the same spekulization as the rest of them where my biggest concerns are that the models will weight the results in an unfair biased sample or scope bias way were it'll see it mostly see that 'BENIGN' is much more massive then anything else. When the model see this it'll understand that being biased to 'BENIGN' will result in a better precision but lack in recall.
+This is probably still the same speculation as the rest of them where my biggest concerns are that the models will weight the results in an unfair biased sample or scope bias way were it'll see it mostly see that 'BENIGN' is much more massive then anything else. When the model see this it'll understand that being biased to 'BENIGN' will result in a better precision but lack in recall.
 
 # Before running all CSV together:
-I was wondering how the performace of all 8 rather larger CSV's running together would have an effect on either the computer or 
-the performance of the model. So I began to research for effiencies in my pytorch code. It so happens that I was utilizing the code 'NeuralNet(input_size, num_classes)' which is technically correct for the idea of Nividia's CUDA GPU design. However this severly, bottlenecks macs performace. By simply adding '.todevice()' we get mac's full potential. See when we want to utlize both the CPU and Gpu power tfrom Nividia's CUDA design the CPU and GPU are not connected and the code understands this however for a macbook their all together on one logic board system. When running Pytorch on mac without '.to(device)' my GPU isnt working putting all the power on the CPU's cores alone. Pretty impressive the macbook was able to still do the data but a simple extra heat on my lap had me thinking to ask why?
+I was wondering how the performance of all 8 rather larger CSV's running together would have an effect on either the computer or 
+the performance of the model. So I began to research for efficiencies in my pytorch code. It so happens that I was utilizing the code 'NeuralNet(input_size, num_classes)' which is technically correct for the idea of NVIDIA's CUDA GPU design. However this severely bottlenecks macs performance. By simply adding '.todevice()' we get mac's full potential. See when we want to utilize both the CPU and Gpu power from NVIDIA's CUDA design the CPU and GPU are not connected and the code understands this however for a macbook their all together on one logic board system. When running Pytorch on mac without '.to(device)' my GPU isnt working putting all the power on the CPU's cores alone. Pretty impressive the macbook was able to still do the data but a simple extra heat on my lap had me thinking to ask why?
 
 
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -327,6 +327,97 @@ Environment: Python 3.13 | VS Code | Kagglehub
 #  CONCAT FILES
 Date: May 2nd, 2026
 
-Concat did not help SQL-Injection which proves my theory that this isnt a modeling problem however is a data problem. With 2.8 million rows of data SQL-Injection is just so rare and the dataset shows such little difference in change that its almost impossible for the model to predict. Even proven before that dropna was simply only dropping values that were inf from the values, nothing of value that could benift the data to better predicitng SQL-Injection. However I did notice that, infiltration did go up and improve slighty with concat getting more access of data did infact improve it's chances in the model to be detected.
+Concat did not help SQL-Injection which proves my theory that this isnt a modeling problem however is a data problem. With 2.8 million rows of data SQL-Injection is just so rare and the dataset shows such little difference in change that its almost impossible for the model to predict. Even proven before that dropna was simply only dropping values that were inf from the values, nothing of value that could benefit the data to better predicting SQL-Injection. However I did notice that, infiltration did go up and improve slightly with concat getting more access of data did infact improve it's chances in the model to be detected.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+#  CSV/CONCAT Graphs
+Date: May 5th, 2026
+
+Graphing: Out of all three models used on this project, we XGBOOST was the easiest and most legable experinnce out of all of them.
+
+Surprisingly enough I was shocked to see that the graphs were able to show how different the models solved the same problem, dectecting intrusion. My expectations were that all three models would indicate the same value as most important in detecting intrusion for the same individual CSV file. Even through CONCAT each file was drastically different. So I wanted to do further research to better explain as to why.
+
+RFC: The mean decreases in impurity(Gini). across all 100 decision trees which of the feature reduced uncertiantity the most on average? It averages across 100 trees, importance gets spread across many correlated features. This prevents any single feature from dominating.
+
+XGBOOST: Uses gain. Which feature reduced prediction error the most in its own boosting sequence is what its going to then focus more onto. XGBOOST builds tress one at a time, each one fixing the mistakes previous on the tree. It then tends to concentrate importance very heavily on the one feature that cuts the problem fastest. 
+
+PYTORCH/SHAP: Uses Shapely values. It askes if I remove this feature, how much would the prediction change across every possible subset of features? This is called a game theory based method that is drastically and fundementally different from the other two models. 
+
+Simply: They are all asking different legitimate questions to solve the same complex problem their put in front of.
+
+Unfortuntately, I wasnt able to experience truly one suffer one something in the dataset while others thrived however. The dataset overall is very clean and easy for the models to get an accurate detection on most except for SQL-Injection and Infiltration. Which concat didnt seem to help with either.
+
+Obviously, Monday's graphs were all consistently no value as all of the data in monday's csv were completely BENIGN.
+
+Most important column: 
+
+Monday: Doesnt have a most column all is BEIGN
+
+Tuesday:
+RFC - Destination Port
+XGBOOST - Destination Port
+TORCH/SHAP - Destination Port
+(Actually had the same interest after intrusion)
+
+Wednesday: 
+RFC - Bwd Packet Length Mean
+XGBOOST - BWD Packet Length Std
+TORCH/SHAP - Flow Duration
+(Were after almost the same thing)
+
+Thursday:
+Thursday Morning:
+RFC - Fwd IAT Min
+XGBOOST - init_win_bytes_backward
+TORCH/SHAP - Destination Port
+
+Thursday Afternoon:
+RFC - Total Length of FWD Packets
+XGBOOST - ACK Flag Count
+TORCH/SHAP - Destination Port
+
+Friday:
+Friday Morning:
+RFC - init_Win_bytes_foward
+XGBOOST - Bwd IAT Min
+TORCH/SHAP - Flow Duration
+
+Friday Afternoon P:
+RFC -  Total Length of Fwd Packets
+XGBOOST - Total Length of FWD Packet
+TORCH/SHAP - Flow Duration
+
+Friday Afternoion D:
+RFC - Avg Fwd Segment Size
+XGBOOST - Fwd Packet Length Mean 
+TORCH/SHAP - Flow Duration
+
+RFC - More diverse than Torch but mainly likes packet movement
+XGBOOST - Most Diverse than all of them
+Torch loved only really Destination Port/Flow Duration
+
+Concat:
+RFC - Packet Length Std
+XGBOOST - Idle Mean
+TORCH/SHAP - Fwd Packet Length Min
+
+URGENT: Some column names are clashing within the different CSV files
+
+Show charts, and score comparisons once the new drop is down
+Use this for google slides
+
+Duplicated columns noticed:     
+    'Fwd Header Length.1',
+    'Avg Fwd Segment Size',
+    'Subflow fwd bytes',
+    'Subflow fwd packets',
+    'Subflow bwd Packets',
+    'Subflow bwd bytes',
+    'Packet Length Variance' 
+
 
 ----------------------------------------------------------------------------------------------------------------------------------
