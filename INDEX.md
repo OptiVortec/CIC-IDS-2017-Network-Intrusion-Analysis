@@ -11,7 +11,7 @@ Is completely normal traffic deemed to not be an invasive attack.
 ----
 
 
-DDos - Distributed Denial of Service - DDoS floods the network or server with an overwhelming amount of traffic rendering it unable to respond to legitimate requests. Tries to force the server or network to read so much incoming traffic at once it clogs it entirely for real traffic to get through.
+DDoS - Distributed Denial of Service - DDoS floods the network or server with an overwhelming amount of traffic rendering it unable to respond to legitimate requests. Tries to force the server or network to read so much incoming traffic at once it clogs it entirely for real traffic to get through.
 
 
 Models Responses: Easily detectable through abnormal flow duration and packet counts. Detects immediately.
@@ -42,10 +42,10 @@ Solutions: Same as 'SQL-Injection' either more data needs to be collected agains
 Heartbleed - User to website/network: when idling computer to network sends a heartbeat to network saying it still exists on the network. This helps with things like staying logged in and not becoming logged out for too much idle time. Heartbleed is when the attacker mimics the heartbleed intercepting the network. When the attack reaches the network it sends information back out which can be things like (keys) to keep in the account or full passwords which can then be taken advantage of.
 
 
-Model's Response: It sees that port 444 is typically the only port it attacks and rather than the data flowing through multiple ports at once/ heartbleed sends a bunch of abnormal data to just this one port practically catching it every time.
+Model's Response: It sees that port 443 is typically the only port it attacks and rather than the data flowing through multiple ports at once/ heartbleed sends a bunch of abnormal data to just this one port practically catching it every time.
 
 
-Attack Port: 444/443
+Attack Port: 443
 
 
 Solutions: SSL encryption (Secure Socket Layer) if not possible or too many users an idle time duration that kicks the user from the network can help reduce user count to help SSL as well as protect the user's data.
@@ -130,9 +130,7 @@ Random Forest Classification (RFC) - An ensemble model that builds multiple deci
 XGBOOST - A gradient boosting model that builds trees sequentially, each tree correcting the errors of the last. Significantly faster than RFC on this dataset. Both XGBOOST and Random Forest were equally comparable for the most part in results. However struggled more on things Random Forest struggled on.
 
 
-Pytorch -
-
-
+PyTorch - A deep learning framework using multi-dimensional arrays (tensors) and dynamic computation graphs. Trains neural networks layer by layer, updating weights through backpropagation. Uses Apple Silicon MPS (or NVIDIA CUDA) for GPU acceleration. Feature importance is explained using SHAP (SHapley Additive exPlanations), a game-theory based method that measures each feature's marginal contribution to predictions. Generally more honest on difficult minority classes, though slower to converge than tree-based models on tabular data.
 
 
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -230,13 +228,13 @@ Bwd IAT Min - The min measure of timing rhythm of backward packets going in.
 -----------------------------------------------------------------------------------------------------------------------------
 # TCP Flags  (Instruction Manual)
 
-TCP flags are single-bit filters telling the recieving computer exactly how to handle the incoming packet.
+TCP flags are single-bit filters telling the receiving computer exactly how to handle the incoming packet.
 
 # Unsure at this moment
 
-Fwd PSH Flags -  Packets forward with push flag, tells reciever to process data immediately rather than buffering.
+Fwd PSH Flags -  Packets forward with push flag, tells receiver to process data immediately rather than buffering.
 
-Bwd PSH Flags - Packets backward with push flag, tells reciever to process data immediately rather than buffering.
+Bwd PSH Flags - Packets backward with push flag, tells receiver to process data immediately rather than buffering.
 
 Fwd URG Flags - Packets forward with urgent flag, signals the specific incoming data within the data should be prioritized by the receiving app.
 
@@ -302,7 +300,7 @@ Bwd Avg Packets/Bulk - Average backward packets sent per bulk.
 Bwd Avg Bulk Rate - Average backward transfer rate (speed) during bulk burst.
 
 -----------------------------------------------------------------------------------------------------------------------------
-# RECIEVE AND TRANSACTIONS
+# RECEIVE AND TRANSACTIONS
 
 Subflow Fwd Packets - Tracks smaller forward subflow data that was once single larger transactions. (PACKETS)
 
