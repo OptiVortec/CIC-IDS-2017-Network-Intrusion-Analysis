@@ -936,3 +936,716 @@ Conclusion: Columns should not be dropped, except for 'Fwd Header Length.1'.
 See PowerPoint for full results.
 
 ----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+#  Destination Port's on attack
+Date: May 14th, 2026
+
+So I wanted to see what ports trended to see patterns in attacks, what destination ports do they tend to go to in order to attack. As we know some attacks go to specific ports only. I wanted to see that result in this dataset.
+
+I first started with a simple code on 'Tuesday_WorkingHours.ipynb':
+'''print(data.isnull().sum())
+   print('----')
+   print(data['Label'].value_counts())
+   for i in data['Label']:
+       for n in data['Destination Port']:
+           print(f"{i}, {n}")'''
+
+I just first wanted to see the labels and the destination port's printed together, funny enough forgetting
+that the csv is massive leading to a computer crash.
+
+Improved Final version:
+
+num_port = {}
+count = {}
+
+'''for label, port in zip(data['Label'], data['Destination Port']):
+      if label not in num_port:
+         num_port[label] = []
+      num_port[label].append(port)
+
+   for label, ports in num_port.items():
+      count = {}
+      for port in ports:
+         if port not in count:
+               count[port] = 0
+         count[port] += 1
+      most_common_port = max(count, key=count.get)
+      least_common_port = min(count, key=count.get)
+      other_ports = [port for port, hits in count.items() if port not in [most_common_port, least_common_port]]
+      print(f"Label: {label}, Most Common Destination Port: {most_common_port}, Hits: {count[most_common_port]}")
+      print(f"Label: {label}, Least Common Destination Port: {least_common_port}, Hits: {count[least_common_port]}")
+      print(f"Label: {label}, Other Destination Ports: {other_ports}")
+      print("-----")'''
+
+# Results:
+
+# BENIGN
+Label: BENIGN, Most Common Destination Port: 53, Hits: 957812
+Label: BENIGN, Least Common Destination Port: 33637, Hits: 1
+Label: BENIGN, Other Destination Ports: (Too much! Please see 'concat_RFC.ipynb for more.)
+
+BENIGN Conclusion -
+Port 53: DNS Digital Phone Book
+Port 33647: Inconclusive.
+Other: Many.
+
+ Port 53 being the most common makes sense, this tells us that the most common destination port
+ is coming from the DNS thats telling the computer what number its trying to find, hence a phone book.
+ The most normal of traffic is just people trying to get on to the internet and surf.
+
+ Port 33647 is not a register port, could very well be an outlier of the dataset or potentially a silent, malware attack to the network that slipped by as BENIGN. Not enough evidence/data to conclude from. Could be somehthing to potentially watch out for if more trafick comes from this port. Often attackers will use unregistered high ports for active malware.
+
+ Other Ports are scattered among all the destination ports which is completely normal to see from normal traffic.
+
+-----
+# INFILTRATION
+Label: Infiltration, Most Common Destination Port: 444, Hits: 36
+Label: Infiltration, Least Common Destination Port: 444, Hits: 36
+Label: Infiltration, Other Destination Ports: []
+
+## Infiltration Conclusion -
+
+Port 444: SEVERE CONCERN. Port is outdated not really used on a network anymore.
+Port 443: Normal HTTPS traffick
+
+This is a situation where the attacker has already broken inside to network but now needs to move 
+laterally through the network in order to:
+
+1. Move laterally through systems
+2. Exfiltrate data
+3. Establish persistence
+4. Communicate back to their command and control (C2) server
+
+C2 communication: Talk back to the attacker for futher commands.
+
+Data Exfiltration: The extraction of sensitive data back to the attacker from the network.
+Tunneling: This hides the attack to go undercover to mimic what normal traffick looks like to aviod 
+an attack.
+
+Beaconing: Sending a pulse back to the attacker keeping the connection that it is still alive in 
+the network.
+
+What the attacker does in order to do this is try to sit as close as they can to port 443, which is normal
+HTTPS traffick and tries to mimic it to avoid detection. Traffick is most likely encrypted to not disclose
+what type of packets of imformation its containing or where its going. The attack is most likely extremely
+slow and quiet to prevent detection.
+
+For this type of situation I dont recommend closing port 444, it is usually an entirely useless port, however this is a situation where the attacker is already in the network, closing it would just make the attacker more to another port instead. 
+
+### What to do now?
+1. Assume compromised. Treat as threat.
+2. Identify: 
+How many machines are communicating there.
+What are the IP's whats the source where is it going.
+When has the traffic start.
+How long has it started.
+When does it normally start.
+3. Contain:
+DO NOT BLOCK PORT - Use as Forensic Evidence.
+Isolate machines on port 444, DO NOT SHUT DOWN.
+4. Investigate Entry - Where did it get in.
+Were we a victim too:
+Phishing email that executed a payload?
+Exploited public facing service?
+Compromised Credentials? 
+Malicious Insider?
+5. Eradication/Recovery
+Path/Close Vulnerabilities.
+Wipe/Reimage Compromised Machines.
+Rotate all API's and Credentials.
+Restore to clean backups.
+6. Harden network. (Fool me once, shame on me. Fool me twice..?)
+Dont become the same victim twice.
+
+- Network Segmentation
+- Zero Trust Architecture
+- EDR (Endpoint Detection and Response.)
+- Behavior Monitoring
+- Least Privilege
+
+
+-----
+# BOT
+Label: Bot, Most Common Destination Port: 8080, Hits: 1261
+Label: Bot, Least Common Destination Port: 1841, Hits: 1
+Label: Bot, Other Destination Ports: (Too much! Please see 'concat_RFC.ipynb for more.)
+
+Port 8080: Super Common HTTPS traffic port (Used typically when port 80 is congested.)
+Port 1841: Unregistered. Suspiscious.
+
+Bots are the beginning of something far worse. This is when a machine in the network has become a bot or its better term a zombie. The end goal here isn't one zombie but a massive amount of zombie to then lead to a much bigger attack like:
+
+- DDos Attack
+- Spam Campaign: Massive physhing email spree.
+- Cryptomining: Very new reason for attacking machines now.
+- Data theft
+- Malware Spreading
+
+## Bot Conclusion:
+
+Bots are extremely difficult to solve. The best thing against them is always the begining. Stop the chances of them from even getting through the door and spreading. (like roaches.) 
+
+### LAYER 1 - PREVENTION
+1. Keeping all systems patched and updated keeps most bot and malware exploits away as most bot malware knows to exploit vulnerabilities not yet patched.
+
+2. Email filtering. Blocking, attachments, links that potentially are phishing. 
+
+3. Web Filtering. 
+This is when we block well known malicious domains and drive by download sites.
+
+4. User Awareness training.
+
+This is mostly what users on the network can prevent themselves from doing to prevent the spread. But incase user has been potentially infected having detections to monitor that to then clean either the machine or account from becoming 'zombified' might be the best solution.
+
+### LAYER 2 DETECTION
+
+- EDR to monitor behavior on each machine to flag and report suspicious activity even regardless of what port.
+
+- Network Traffic Analysis: Looks for beaconing patterns, unusual outbound connections and traffic to unknown IP'S
+
+- DNS Monitoring:
+This is where bots like to used DNS to locate thie C2 server. Seeing unusual DNS queries are a major red flag.
+
+- SIEM (Security Information and Event Management) 
+Focuses and logs everything to correlate suspicious patterns.
+
+### LAYER 3 Containment (Limiting the radius of attack)
+
+- Network Segmentation (Seperation)
+
+- Zero Trust (Verify Everything)
+
+- Least Privilege (Only what you need)
+
+- Firewall Rules (Block the unknown when can.)
+
+### LAYER 4 Response
+
+1. Isolate
+2. Contain
+DONT SHUTDOWN
+(Preserve Memory Forenics)
+3. Investigate what it connects to. (What machines are talking to the infected.)
+4. Assume worst.
+Assume lateral movement has happened.
+Check all neighbors from the infection.
+
+### LAYER 5 Recovery
+1. Wipe and reimage the infected.
+
+2. Rotate credentials on network.
+
+3. Patch vulnerability thats been exploited.
+Review and tighten firewall and any monitoring rules if can. 
+
+Bots are silent infectious zombies. They are 'The Walking Dead' to the network world.
+
+-----
+# PORTSCAN
+Label: PortScan, Most Common Destination Port: 80, Hits: 373
+Label: PortScan, Least Common Destination Port: 123, Hits: 1
+Label: PortScan, Other Destination Ports: (Too much! Please see 'concat_RFC.ipynb for more.)
+
+Port 80: Standard HTTP
+Port 123: NTP (Network Timed Protocol)
+
+Portscan goes to every to every port knocks on the door and see's whats open and what it can tell the attacker it can get its hands on. Port 123 only has one account of it therefor not enough data however NTP is sometimes a subject of an attack by DdoS, bot and Infiltration so it could be potentially an attack.
+
+The problem with looking at Port Scan from this direction is Port Scan knocks on all doors so other destinations is just all over the place which makes 123 port most likely an outlier. Port 80 being hit 373 at port 80 isn't that much data and I dont believe tells us much, other than its potential that the first warning of attack could begin in port 80.
+
+What should be focused on now is what happened after then inital portscan, what happens next is the actual attack, also why I think this dataset could drastically improve more if there were time stamps of the networks movement. 
+
+You cant prevent portscanning, but you can prevent the attack.
+
+-----
+# DDoS
+Label: DDoS, Most Common Destination Port: 80, Hits: 128024
+Label: DDoS, Least Common Destination Port: 64869, Hits: 1
+Label: DDoS, Other Destination Ports: [64873, 27636]
+
+Port 80: Basic HTTP port
+Port 64869: Unregistered.
+Port 64873: Unregistered.
+Port 27636: registered range (1024–49151) NO PURPOSE.
+dynamic/ephemeral port range (49152–65535)
+
+# DDoS Conclusion
+For wild ports like '64869', '64873', '27636' express immediate concern these ports typically have no assignment so seeing something that far off is an immediate red flag.
+
+Port 80 being the most common is of no suprise, DDoS is looking to be expensive to the servers attention and looking to drain its attention to the attack, slowing down and crashing the entire network when it can.Its also using a port for HTTP and not HTTPS so it doesnt need to go through encryption so it can spam faster. 
+
+## LAYER 1 Absorb
+
+- CDN (Content Delivery Network)
+if possible spread traffic across hunres of severs globally so no single server gets overwhelmed making the DDoS sucessful.
+
+- Load Balancers
+This is a distributer from incoming traffic across multiple servers to prevent the DDoS from centralizing against one port and overwhelming the server, this offsets the load.
+
+- Overprovisioning bandwidth
+Simply if possible you have more capacity than an attacker can flood.
+
+## Layer 2 Filtering
+
+- DDoS scrubbing centers 
+Traffic gets routed through a cleaning center that strips malicious requests before getting foward as legitimate ones
+
+- Rate Limiting
+You can have the network cap at how many requests one IP can make per second limiting the chances of the network being overwhelmed. (Like a DDoS attack)
+
+- IP Reputation filtering
+Blocking knonwn malicious IP'S and botnets automatically.
+
+- Geo Blocking
+If an attack traffic comes from specific countries that are not known for being allowed on the network we can restrict and block off that countries capability to become apart of our traffic entirely.
+
+## Layer 3 Detect Early (Monitoring)
+
+- Anomaly Detection
+Alerts if normal traffic deviates from its normal path.
+
+- Traffic analysis 
+Identify patterns that indicate floddinng behavior.
+
+- SEIM alert
+Automating alerting thresholds have been exceeded.
+
+## Layer 4 Specialized DDoS Protection Services
+
+- Cloudflare
+
+- AWS Shield
+
+- Akamai
+
+## Layer 5 Architenture
+
+- Anycast routing
+spreads attack traffic across multiple data centers globally
+
+- Microservices
+if one service goes down others stay up. (GCP, AWS, AZURE)
+
+- Auto scalling
+Automatic spin up of more servers when traffik spikes
+
+- Redunant ISP connections
+Multipe internet connections so one gets flodded doesnt take down the whole operation.
+
+
+
+-----
+# FTP-PATATOR
+Label: FTP-Patator, Most Common Destination Port: 21, Hits: 7937
+Label: FTP-Patator, Least Common Destination Port: 80, Hits: 1
+Label: FTP-Patator, Other Destination Ports: []
+
+Port 21: (OUTDATED MUST BE CLOSED) Legacy FTP
+Port 80: Basic HTTP
+
+## FTP-PATATOR Conclusion
+Port 21 is a very outdated file transfor protocol that has very little use in 2026 but is often still used by companies today like government, healthcare and old 2000's genoration companies that still havent replaced old hardware or closed the port entirely.
+
+Extremely obsolete and needs to be shut closed.
+
+However this doesnt completetly cover Patator as a whole. Patator is a brute force tool that systematically tries a bunch of different combinations until it cracks your username and password.
+Pataor is not limited to only FTP. 
+
+(Think of this as trying every combination in a combination lock.)
+
+Finally this FTP-Patator will then log in for full FTP access.
+
+### What to do
+
+- Close Port 21 entirely
+- Migrate to SFTP on port 22
+- Implement account lockout polices
+- Rate limit login attempts
+- If port 21 must stay open whitelist trusted IPs only
+
+-----
+# SSH-PATATOR
+Label: SSH-Patator, Most Common Destination Port: 22, Hits: 5897
+Label: SSH-Patator, Least Common Destination Port: 22, Hits: 5897
+Label: SSH-Patator, Other Destination Ports: []
+
+Port 22: SSH Secure Shell Protocol
+
+## SSH-Patator Conclusion
+SSH-Patator only likes and cant hit port 22, port 22 is extremely dangerous if an attacker has their hands on this in your network. Does the same exact thing FTP does but SSH is much more dangerous/sensitive. Brute force combination lock hack.
+
+Gives attacker access to:
+
+- Full command line control.
+- Can do anything on that machine
+- Install malware
+- Create backdoors
+- Move Laterally through network
+- Exfiltrate data
+- Creating backdoor account
+- Installing rootkit
+(hides presence within machine)
+
+
+Entire machine is compromised once SSH-Parator is sucessfull.
+
+### What to do
+
+- Install 2nd Authentification
+- Port knocking
+Until the port is needed and a sequence of ports are hit the port stays entirely closed.
+- Fail2ban
+blocks IP's after failing attempts automatically
+- Rate Limiting
+Very practical for all kinds of brute force attempts using slow down or lock outs for too many attempts. This can stop most brute force attempts.
+- IP whitelisting
+Simply only trusted IP's can use from this port.
+
+-----
+# Dos slowloris
+Label: DoS slowloris, Most Common Destination Port: 80, Hits: 5796
+Label: DoS slowloris, Least Common Destination Port: 80, Hits: 5796
+Label: DoS slowloris, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Dos slowloris conclusion:
+Unlike a normal DdoS attack that floods you, is obvious and just got for the objective 
+its looking to do and harm. 'Dos slowloris' is strategic more silent and harder to see. It slowly
+bombs the network to avoid detection using very little bandwidth.
+
+Slowloris opens many connections to the server sending partial incomplete requests making the server wait thinking the complete request will come to complete it.
+
+This drastically limits the connection slots haulting anyone else from using the network.
+
+### What to do
+
+- Connection timeout settings 
+- Limit connections per Ip
+(limits one source from holding too many connections with the network)
+- Load balancers
+Distributes and manages connections much more effienectly.
+- Nginx 
+- Cloudflare
+
+
+
+-----
+# Dos Slowhttptest
+Label: DoS Slowhttptest, Most Common Destination Port: 80, Hits: 5499
+Label: DoS Slowhttptest, Least Common Destination Port: 80, Hits: 5499
+Label: DoS Slowhttptest, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Dos Slowhttptest Conclusion
+
+Slowhttptest is the same as slowloris but comes with more, it uses more techniques than slowloris to do the same objective.
+
+- Slowloris
+- Slow POST
+- Slow Read
+- Range Header
+
+### What to do
+
+- Connection timeout settings 
+- Limit connections per Ip
+(limits one source from holding too many connections with the network)
+- Load balancers
+Distributes and manages connections much more effienectly.
+- Nginx 
+- Cloudflare
+
+-----
+# DoS Hulk
+Label: DoS Hulk, Most Common Destination Port: 80, Hits: 231073
+Label: DoS Hulk, Least Common Destination Port: 80, Hits: 231073
+Label: DoS Hulk, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Dos Hulk Conclusion
+
+All Dos especially when coming from port 80 are all doing relatively have the same objective and just do it in different ways.
+
+'Dos Hulk' sends massive and agressive waves of caching nonsense the network tries to read but cant. Nothing in them, the link goes no where, floods all space in the network slowing and crashing it.
+
+### What to do
+Same as the rest.
+
+- Rate Limiting
+- CAPTCHA
+(Humans arent Dos attacks.)
+- IP reputation filtering
+- Cloudfare or WAP
+- Load Balancing 
+- Connection timeout settings 
+
+-----
+# DoS GoldenEye
+Label: DoS GoldenEye, Most Common Destination Port: 80, Hits: 10293
+Label: DoS GoldenEye, Least Common Destination Port: 80, Hits: 10293
+Label: DoS GoldenEye, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## DoS GoldenEye Conclusion:
+Combination of Hulk and Lowris.
+
+Hulk - Sending unique request generation
+
+Slowloris - Slow and exhausting.
+
+### What to do
+Same as all the rest.
+- WAF
+- Rate limiting
+- Connection timeouts
+- Cloudfare
+- Nginx
+- IP reputation
+- CAPTCHA
+(Humans arent Dos attacks.)
+- Load Balancing 
+
+
+-----
+# HeartBleed
+Label: Heartbleed, Most Common Destination Port: 444, Hits: 11
+Label: Heartbleed, Least Common Destination Port: 444, Hits: 11
+Label: Heartbleed, Other Destination Ports: []
+
+## HeartBleed Conclusion:
+
+Heartbleed is a critical vulnerability in OpenSSL, the encryption library used by 
+millions of servers to handle secure HTTPS and SSL/TLS connections.
+
+SSL connections use a heartbeat mechanism to keep connections alive. A machine sends 
+a heartbeat message to the server saying "I am still here, send back X bytes to confirm." 
+Heartbleed exploits this by sending a heartbeat claiming to carry a large amount of data 
+but actually sending almost nothing. The server then reads back a large chunk of its own 
+memory to fulfill the request, unknowingly handing over whatever sensitive data was 
+stored there at the time. This could include passwords, private encryption keys, 
+and session tokens.
+
+Its almost as 'Hearbleed' is the pirate in a sea of SSL data
+
+Port 444 only recording 11 hits is expected. Heartbleed is not a flood attack, 
+it is a precise surgical strike. One successful hit can expose everything, 
+making 11 attempts significant despite the low volume. However the more this 
+attack is recorded, the better the chance the model can see it for the future.
+
+### What to do
+
+- Patch OpenSSL immediately to the latest version
+- Revoke and reissue all SSL certificates
+- Rotate all passwords and session tokens that may have been exposed
+- Update all software dependant on the vulnerable OpenSSL version
+- Implement WAF rules to detect and block Heartbleed exploitation attempts
+
+
+-----
+# Web Attack � Brute Force
+Label: Web Attack � Brute Force, Most Common Destination Port: 80, Hits: 1507
+Label: Web Attack � Brute Force, Least Common Destination Port: 80, Hits: 1507
+Label: Web Attack � Brute Force, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Web Attack � Brute Force Conclusion:
+
+Exaclty like 'FTP-PATATOR and 'SSH-Patator' but web based and brutal.
+It tries every combination for either username or password or both until its broken.
+
+### What to do
+Same as 'FTP-PATATOR and 'SSH-Patator' but for the website.
+
+- Install 2nd Authentification
+- Port knocking
+- Fail2ban
+- Rate Limiting
+- IP whitelisting
+- Implement account lockout polices
+- CAPTCHA
+
+-----
+
+# Web Attack � XSS
+Label: Web Attack � XSS, Most Common Destination Port: 80, Hits: 652
+Label: Web Attack � XSS, Least Common Destination Port: 80, Hits: 652
+Label: Web Attack � XSS, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Web Attack � XSS Conclusion:
+
+XXS (Cross Site Scripting)
+
+This is when the attacker injects malicious Javascript into a webpage, the victim goes to the website and accidentally excutes the javascript harming their machine.
+
+This can lead to potential:
+
+- Stealing of session cookies
+- Capture keystrokes
+- Redirect users to malicious sites
+- Hijack browser sessions
+
+### What to do 
+
+- Input sanitation
+(Turns all special characters into plain text, no code allowed.)
+- Content Security policy
+Browser can now only execute code thats been approved sources.
+- HTTPOnly cookies
+Simply tells website that the cookies cannot be in javascript.
+- WAF
+(WEB APPLICATION FIREWALL)
+
+
+-----
+# Web Attack � Sql Injection
+Label: Web Attack � Sql Injection, Most Common Destination Port: 80, Hits: 21
+Label: Web Attack � Sql Injection, Least Common Destination Port: 80, Hits: 21
+Label: Web Attack � Sql Injection, Other Destination Ports: []
+Port 80: Basic HTTP
+
+## Web Attack � Sql Injection Conclusion
+Same exact concept as 'Web Attack � XSS' but in SQL this time however actually tagreting the database
+instead of the user and the machine. Steals, modifies, destorys data.
+
+- Attacker accesses entire database
+- Every user account
+- Every password
+- Every credit card
+- Every piece of data ever stored
+- Can delete everything
+- Far more catastrophic
+
+### What to do 
+- Input sanitation
+(Turns all special characters into plain text, no code allowed.)
+- Parameterized Queries
+Database never sees inputs as executable code.
+- WAF
+(WEB APPLICATION FIREWALL)
+- HTTPS Port 443
+
+-----
+
+# Thoughts
+
+I understood that you cant just close ports in the begining of this to solve all your problems even though, some of the best network protection you can do it, is the port being used? No? Close. However I was expecting at least more than one suggestion was going to be close a port its not needed. 
+
+# Conclusion:
+
+Infiltration
+- Network Segmentation
+- Zero Trust Architecture
+- EDR (Endpoint Detection and Response.)
+- Behavior Monitoring
+- Least Privilege
+
+Bot
+- Network Segmentation (Seperation)
+- Zero Trust (Verify Everything)
+- Least Privilege (Only what you need)
+- Firewall Rules (Block the unknown when can.)
+PortScan
+Cannot Prevent. Only can prevent the upcoming attack.
+
+DDoS
+- Anycast routing
+spreads attack traffic across multiple data centers globally
+- Microservices
+if one service goes down others stay up. (GCP, AWS, AZURE)
+- Auto scalling
+Automatic spin up of more servers when traffik spikes
+- Redunant ISP connections
+Multipe internet connections so one gets flodded doesnt take down the whole operation.
+
+FTP-Patator
+- Close Port 21 entirely
+- Migrate to SFTP on port 22
+- Implement account lockout polices
+- Rate limit login attempts
+- If port 21 must stay open whitelist trusted IPs only
+
+SSH-Patator
+- Install 2nd Authentification
+- Port knocking
+Until the port is needed and a sequence of ports are hit the port stays entirely closed.
+- Fail2ban
+blocks IP's after failing attempts automatically
+- Rate Limiting
+Very practical for all kinds of brute force attempts using slow down or lock outs for too many attempts. This can stop most brute force attempts.
+- IP whitelisting
+Simply only trusted IP's can use from this port.
+
+Dos slowloris
+- Connection timeout settings 
+- Limit connections per Ip
+(limits one source from holding too many connections with the network)
+- Load balancers
+Distributes and manages connections much more effienectly.
+- Nginx 
+- Cloudflare
+
+DoS Slowhttptest
+- Connection timeout settings 
+- Limit connections per Ip
+(limits one source from holding too many connections with the network)
+- Load balancers
+Distributes and manages connections much more effienectly.
+- Nginx 
+- Cloudflare
+
+DoS Hulk
+- Rate Limiting
+- CAPTCHA
+(Humans arent Dos attacks.)
+- IP reputation filtering
+- Cloudfare or WAP
+- Load Balancing 
+- Connection timeout settings 
+
+DoS GoldenEye
+
+- WAF
+- Rate limiting
+- Connection timeouts
+- Cloudfare
+- Nginx
+- IP reputation
+- CAPTCHA
+(Humans arent Dos attacks.)
+- Load Balancing 
+
+Heartbleed
+- Patch OpenSSL immediately to the latest version
+- Revoke and reissue all SSL certificates
+- Rotate all passwords and session tokens that may have been exposed
+- Update all software dependant on the vulnerable OpenSSL version
+- Implement WAF rules to detect and block Heartbleed exploitation attempts
+
+Web Attack � Brute Force
+- Install 2nd Authentification
+- Port knocking
+- Fail2ban
+- Rate Limiting
+- IP whitelisting
+- Implement account lockout polices
+- CAPTCHA
+
+Web Attack � XSS
+- Stealing of session cookies
+- Capture keystrokes
+- Redirect users to malicious sites
+- Hijack browser sessions
+
+Web Attack � Sql Injection Conclusion
+- Input sanitation
+(Turns all special characters into plain text, no code allowed.)
+- Parameterized Queries
+Database never sees inputs as executable code.
+- WAF
+(WEB APPLICATION FIREWALL)
+- HTTPS Port 443
+
+
