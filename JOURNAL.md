@@ -48,11 +48,11 @@ Goal: Observe the first CSV file, see what is available to take from the dataset
 # Observation
 1. Dataset: (529918 rows x  79 columns) Dataset shows each port and network traffic going through the dataset.
 BENIGN value count 529918/529918
-2. Dataset shows each port traffic by number, as well as package size
+2. Dataset shows each port traffic by number, as well as packet size
 (Total Length of Fwd Packets) / (Total Length of Bwd Packets) and Idle Mean
 and if traffic flow caused delay. This is great as these values can potentially show us DDoS attacks
 and any signs of delays.
-3. Notice the dataset doesn't have time stamps, however it does have 'Flow Duration', 'Flow IAT Mean, 'Fwd IAT Total' which show us the actual duration of how long the conversation lasted within the network. (Helps defend against DDoS attacks.)
+3. Notice the dataset doesn't have time stamps, however it does have 'Flow Duration', 'Flow IAT Mean', 'Fwd IAT Total' which show us the actual duration of how long the conversation lasted within the network. (Helps defend against DDoS attacks.)
 
 
 
@@ -64,7 +64,7 @@ This proves that the monday csv is more of an intro to the dataset, no value's m
 
 
 Concerns:
-As much as I love 'Flow Duration', 'Flow IAT Mean, 'Fwd IAT Total', this dataset would be a lot more significantly impactful
+As much as I love 'Flow Duration', 'Flow IAT Mean', 'Fwd IAT Total', this dataset would be a lot more significantly impactful
 against attacks if we had actual timestamps to work with. Timestamps can help us accurately spot 'temporal pattern analysis'. Where we can spot and locate potential patterns and determine when we're most likely to be attacked.
 ----------------------------------------------------------------------------------------------------------------------------------
 Author: Antonio Gonzalez
@@ -141,7 +141,7 @@ the fastest being 0.8 seconds ('Monday-WorkingHours.pcap_ISCX.csv') XGBOOST comp
 
 2. XGBOOST was for the most part on par with RFC in these datasets, however I actually saw significant reductions in probability when
 it came to the hardest data set. 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' main issues being
-'Web Attack – SQL Injection' from my observation based on the recall scores being the lowest, it's a sign that the actual attacks are being constantly missed, its directly from both not enough data to fight against it and that the data doesn't
+'Web Attack – SQL Injection' from my observation based on the recall scores being the lowest, it's a sign that the actual attacks are being constantly missed, its cause is directly from not enough data to fight against it and that the data doesn't
 drastically change enough for the data to truly respond against it.
 
 
@@ -152,7 +152,7 @@ drastically change enough for the data to truly respond against it.
 RFC and XGBOOST were able to detect it in each model so well.
 Conclusion on heartbleed:
 Even though its only 11 cases, from further investigation on 'Wednesday-workingHours.pcap_ISCX.csv' heartbleed
-only seems to attack port 443 with zero variation to other ports. This is because heart bleed is a bug in SSL/TLS encryption. It sends a small "heartbeat" request to a server but lies about how big it is, tricking the server to send back more data than it should. This leaks the server memory which may contain passwords, keys and sensitive data. This is why websites look into becoming SSL (Secure Socket Layer) which not only protects the website but its users as well.
+only seems to attack port 444 with zero variation to other ports. This is because heart bleed is a bug in SSL/TLS encryption. It sends a small "heartbeat" request to a server but lies about how big it is, tricking the server to send back more data than it should. This leaks the server memory which may contain passwords, keys and sensitive data. This is why websites look into becoming SSL (Secure Socket Layer) which not only protects the website but its users as well.
 
 
 Solution:
@@ -238,7 +238,7 @@ Goal: Investigate SQL-Injection/Infiltration issues.
 
 
 # Observation:
-Seeing biggest issue on Thursday's files, file: 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' and Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv ' both SQL-Injection, and 'Infiltration' my reasoning is because there isn't enough
+Seeing biggest issue on Thursday's files, file: 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' and Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv' both SQL-Injection, and 'Infiltration' my reasoning is because there isn't enough
 data on these attacks for the model to truly understand them yet/the parameters on the dataset for both SQL injection and Infiltration are so minute that it's hard to predict when the model displays such little difference compared to BENIGN more data could help this result.
 
 
@@ -272,7 +272,7 @@ See if 5 extra folds helps the model predict better results.
 
 
 #  Observation:
-Overall I was anticipating to either see the model really reflect drastically different results between the 5 folded models especially keeping it at the 80/20 level but shuffling it through 5 different ways to experience new in different data or at least see a gradual improvement as it went on through each fold. Instead it was rather consistent especially with most of the data being pretty high and consistent throughout most data sets I was more so really paying attention to the difficult csv's such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' which is definitely been the hardest for the model.
+Overall I was anticipating to either see the model really reflect drastically different results between the 5 folded models especially keeping it at the 80/20 level but shuffling it through 5 different ways to experience new in different data or at least see a gradual improvement as it went on through each fold. Instead it was rather consistent especially with most of the data being pretty high and consistent throughout most data sets I was more so really paying attention to the difficult csv's such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' which has definitely been the hardest for the model.
 
 
 
@@ -308,13 +308,13 @@ PyTorch is one of the most widely used open-source deep learning frameworks toda
 The biggest focus to what people love about using it in models is its optimization to improve its statistical modeling while on run time, something I was expecting to see more in XGBOOST. This is called (Dynamic Computation Graph) where  Directed Acyclic Graph (DAG) whose functions focus on memorizing executed operations on the tensors allowing you to change size, operation and shape while on each iteration.
 
 # UNEXPECTED FIND
-When running these larger datasets on something much more elaborate such as Pytorch compared to RFC or XGBOOST, my computer was noticeably getting hotter, certainly not in a concerning way or in anyway beginning to bottleneck but noticeably hotter. I did notice that Pytorch was doing what I thought I would see in XGBOOST where the model performance would drastically improve as each fold progressed. Coming from my results especially with the later days in the week such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' or file 'Thur_WH_M_TORCH' it really wanted nothing to do with 'SQL-Injection' getting a pretty consistent '0.0' across the board. Overall PYTORCH wasn't more successful than the rest, but still consistently got what I believe were more accurate and honest responses. When models predict 100% caught other than on 'Monday's' 100% BENIGN file I'm skeptical to want to believe it where PYTORCH was consistently more around the range of 70-90% accuracy on most thing's if not 100% I'm certainly hoping to see PYTORCH win the end of the race.
+When running these larger datasets on something much more elaborate such as Pytorch compared to RFC or XGBOOST, my computer was noticeably getting hotter, certainly not in a concerning way or in any way beginning to bottleneck but noticeably hotter. I did notice that Pytorch was doing what I thought I would see in XGBOOST where the model performance would drastically improve as each fold progressed. Coming from my results especially with the later days in the week such as 'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv' or file 'Thur_WH_M_TORCH' it really wanted nothing to do with 'SQL-Injection' getting a pretty consistent '0.0' across the board. Overall PYTORCH wasn't more successful than the rest, but still consistently got what I believe were more accurate and honest responses. When models predict 100% caught other than on 'Monday's' 100% BENIGN file I'm skeptical to want to believe it where PYTORCH was consistently more around the range of 70-90% accuracy on most thing's if not 100% I'm certainly hoping to see PYTORCH win the end of the race.
 
 # Further Research
-This is probably still the same speculation as the rest of them where my biggest concerns are that the models will weight the results in an unfair biased sample or scope bias where it'll see it mostly see that 'BENIGN' is much more massive than anything else. When the model see this it'll understand that being biased to 'BENIGN' will result in a better precision but lack in recall.
+This is probably still the same speculation as the rest of them where my biggest concerns are that the models will weight the results in an unfair biased sample or scope bias where it'll mostly see that 'BENIGN' is much more massive than anything else. When the model see this it'll understand that being biased to 'BENIGN' will result in a better precision but lack in recall.
 
 # Before running all CSV together:
-I was wondering how the performance of all 8 rather larger CSV's running together would have an effect on either the computer or 
+I was wondering how the performance of all 8 rather larger CSVs running together would have an effect on either the computer or 
 the performance of the model. So I began to research for efficiencies in my pytorch code. It so happens that I was utilizing the code 'NeuralNet(input_size, num_classes)' which is technically correct for the idea of NVIDIA's CUDA GPU design. However this severely bottlenecks macs performance. By simply adding '.to(device)' we get Mac's full potential. See when we want to utilize both the CPU and Gpu power from NVIDIA's CUDA design the CPU and GPU are not connected and the code understands this however for a MacBook they're all together on one logic board system. When running Pytorch on mac without '.to(device)' my GPU isn't working putting all the power on the CPU's cores alone. Pretty impressive the macbook was able to still do the data but a simple extra heat on my lap had me thinking to ask why?
 
 
@@ -336,7 +336,7 @@ Environment: Python 3.13 | VS Code | Kagglehub
 Date: May 5th-9th, 2026
 (Finals Week)
 
-Graphing: Out of all three models used on this project, we XGBOOST was the easiest and most legible experience out of all of them.
+Graphing: Out of all three models used on this project, XGBOOST was the easiest and most legible experience out of all of them.
 
 Surprisingly enough I was shocked to see that the graphs were able to show how different the models solved the same problem of detecting intrusion. My expectations were that all three models would indicate the same value as most important in detecting intrusion for the same individual CSV file. Even through CONCAT each file was drastically different. So I wanted to do further research to better explain as to why.
 
@@ -348,9 +348,9 @@ PYTORCH/SHAP: Uses Shapely values. It asks: if I remove this feature, how much w
 
 Simply: They are all asking different legitimate questions to solve the same complex problem they're put in front of.
 
-Unfortunately, I wasn't able to experience truly one suffer one something in the dataset while others thrived however. The dataset overall is very clean and easy for the models to get an accurate detection on most except for SQL-Injection and Infiltration. Which concat didnt seem to help with either.
+Unfortunately, I wasn't able to experience truly one suffer one something in the dataset while others thrived however. The dataset overall is very clean and easy for the models to get an accurate detection on most except for SQL-Injection and Infiltration. Which CONCAT didn't seem to help with either.
 
-Obviously, Monday's graphs were all consistently no value as all of the data in monday's csv were completely BENIGN.
+Obviously, Monday's graphs were all consistently no value as all of the data in Monday's CSV were completely BENIGN.
 
 Most important column: 
 
@@ -431,7 +431,7 @@ Date: May 13th, 2026
 
 # Mondays Working Hours:
 
-All results on Monday didnt change with the column drop however,
+All results on Monday didn't change with the column drop however,
 'Destination Port' for Monday on torch actually had less outliers showing the only sign of slight improvement.
 
 ------------------------------------------------------
@@ -480,7 +480,7 @@ RFC - No change from column dropping duplicates.
 
 XGBOOST - Saw Slight decrease in F1-Score from column drop, could be potentially a sign of becoming more accurate despite score going down. (Less leakage)
 
-Torch -  actually saw slight decrease in Precision, Recall and F1-Score.
+PyTorch - actually saw slight decrease in Precision, Recall and F1-Score.
 
 ------------------------------------------------------
 
@@ -491,9 +491,9 @@ Torch -  actually saw slight decrease in Precision, Recall and F1-Score.
 
 ------------------------------------------------------
 
-RFC - Much better improvement form both precision, f1-score and macro average 
+RFC - Much better improvement from both precision, f1-score and macro average 
 precision and macro average f1-score from the model against infiltration, 
-BEIGN still 100% across for this CSV.
+BENIGN still 100% across for this CSV.
 
 
 Original:
@@ -580,7 +580,7 @@ weighted avg       1.00      1.00      1.00     57679
 ------------------------------------------------------
 
 RFC - Slight Change, IAT's went up in importance, 'init_Win_bytes_backward' came down.
-First time actually seeing results come down losing precision very slightly. To my suprise Brute Force actually slightly decreased in model prediction overall with a slightly poorer F1-Score with the new column drop. 'Web Attack � XSS' actually had the most improvement with the column drop out of the rest of the results.
+First time actually seeing results come down losing precision very slightly. To my surprise Brute Force actually slightly decreased in model prediction overall with a slightly poorer F1-Score with the new column drop. 'Web Attack � XSS' actually had the most improvement with the column drop out of the rest of the results.
 
 Unfortunately, 'Web Attack – SQL Injection' / 'Infiltration' were the biggest attacks I wanted to seek improvement for the model as they are its weakest. Which we were able to improve the detection for the model in 'infiltration', 'Web Attack – SQL Injection' saw a pretty significant decrease in detection. Which to my knowledge proves this attack needs more consistent data, and search for more variable changes.
 
@@ -611,7 +611,7 @@ weighted avg       1.00      1.00      1.00     34047
 
 ------------------------------------------------------
 
-TORCH - Graph had little change, some outliers reduced from column drop. BENIGN actually saw a 0.01% dip in precision. While for ' Web Attack � Brute Force' precision went up slightly recall/F1-score drastically decreased should a disadvantage. As for 'Web Attack � XSS' torch is still completely unable to figure out how to detect web attacks, PyTorch definitely surprised me in this and probably isnt the best for this case. Lastly, as for 'Web Attack – SQL Injection', we can see a slight improvement from the column drop but definitely not enough to call an improvement. Proving 1. Torch may not be the best for this dataset and 'Web Attack – SQL Injection' for this dataset needs more data for the model to attack as well as needs more parameters to detect 'Web Attack – SQL Injection' better. 
+TORCH - Graph had little change, some outliers reduced from column drop. BENIGN actually saw a 0.01% dip in precision. While for ' Web Attack � Brute Force' precision went up slightly recall/F1-score drastically decreased should a disadvantage. As for 'Web Attack � XSS' PyTorch is still completely unable to detect web attacks, which definitely surprised me. It probably isn't the best for this case. Lastly, as for 'Web Attack – SQL Injection', we can see a slight improvement from the column drop but definitely not enough to call an improvement. Proving 1. Torch may not be the best for this dataset and 'Web Attack – SQL Injection' for this dataset needs more data for the model to attack as well as needs more parameters to detect 'Web Attack – SQL Injection' better. 
 
 Original:
 Epoch 10/10 Loss: 0.0127
@@ -642,7 +642,7 @@ weighted avg       0.99      0.99      0.99     34047
 
 ------------------------------------------------------
 
-XGBOOST - Overall a massive decrease across the board in everything. Begining to question if this is the right move or did those columns actually have something valueable to them to help this model learn or are we shrinking data leakage or overfitting. Graph didnt change much in value change.
+XGBOOST - Overall a massive decrease across the board in everything. Beginning to question if this was the right move, or did those columns actually have something valuable to help this model learn? Or are we reducing data leakage or overfitting? Graph didn't change much.
 
 Original:
 -Fold--
@@ -683,7 +683,7 @@ this dataset is not using those parameters to predict in the model.
 
 RFC - Completely the same, zero changes.
 
-Orginal:
+Original:
               precision    recall  f1-score   support
 
            0       1.00      1.00      1.00     19628
@@ -995,7 +995,7 @@ Other: Many.
  is coming from the DNS thats telling the computer what number its trying to find, hence a phone book.
  The most normal of traffic is just people trying to get on to the internet and surf.
 
- Port 33647 is not a register port, could very well be an outlier of the dataset or potentially a silent, malware attack to the network that slipped by as BENIGN. Not enough evidence/data to conclude from. Could be somehthing to potentially watch out for if more trafick comes from this port. Often attackers will use unregistered high ports for active malware.
+ Port 33647 is not a register port, could very well be an outlier of the dataset or potentially a silent, malware attack to the network that slipped by as BENIGN. Not enough evidence/data to conclude from. Could be something to potentially watch out for if more traffic comes from this port. Often attackers will use unregistered high ports for active malware.
 
  Other Ports are scattered among all the destination ports which is completely normal to see from normal traffic.
 
@@ -1008,7 +1008,7 @@ Label: Infiltration, Other Destination Ports: []
 ## Infiltration Conclusion -
 
 Port 444: SEVERE CONCERN. Port is outdated not really used on a network anymore.
-Port 443: Normal HTTPS traffick
+Port 443: Normal HTTPS traffic
 
 This is a situation where the attacker has already broken inside to network but now needs to move 
 laterally through the network in order to:
@@ -1018,21 +1018,21 @@ laterally through the network in order to:
 3. Establish persistence
 4. Communicate back to their command and control (C2) server
 
-C2 communication: Talk back to the attacker for futher commands.
+C2 communication: Talk back to the attacker for further commands.
 
 Data Exfiltration: The extraction of sensitive data back to the attacker from the network.
-Tunneling: This hides the attack to go undercover to mimic what normal traffick looks like to aviod 
+Tunneling: This hides the attack to go undercover to mimic what normal traffic looks like to avoid 
 an attack.
 
 Beaconing: Sending a pulse back to the attacker keeping the connection that it is still alive in 
 the network.
 
 What the attacker does in order to do this is try to sit as close as they can to port 443, which is normal
-HTTPS traffick and tries to mimic it to avoid detection. Traffick is most likely encrypted to not disclose
+HTTPS traffic and tries to mimic it to avoid detection. Traffic is most likely encrypted to not disclose
 what type of packets of imformation its containing or where its going. The attack is most likely extremely
 slow and quiet to prevent detection.
 
-For this type of situation I dont recommend closing port 444, it is usually an entirely useless port, however this is a situation where the attacker is already in the network, closing it would just make the attacker more to another port instead. 
+For this type of situation I don't recommend closing port 444, it is usually an entirely useless port, however this is a situation where the attacker is already in the network, closing it would just make the attacker move to another port instead. 
 
 ### What to do now?
 1. Assume compromised. Treat as threat.
@@ -1073,9 +1073,9 @@ Label: Bot, Least Common Destination Port: 1841, Hits: 1
 Label: Bot, Other Destination Ports: (Too much! Please see 'concat_RFC.ipynb for more.)
 
 Port 8080: Super Common HTTPS traffic port (Used typically when port 80 is congested.)
-Port 1841: Unregistered. Suspiscious.
+Port 1841: Unregistered. Suspicious.
 
-Bots are the beginning of something far worse. This is when a machine in the network has become a bot or its better term a zombie. The end goal here isn't one zombie but a massive amount of zombie to then lead to a much bigger attack like:
+Bots are the beginning of something far worse. This is when a machine in the network has become a bot or more accurately, a zombie. The end goal here isn't one zombie but a massive amount of zombie to then lead to a much bigger attack like:
 
 - DDos Attack
 - Spam Campaign: Massive physhing email spree.
@@ -1085,7 +1085,7 @@ Bots are the beginning of something far worse. This is when a machine in the net
 
 ## Bot Conclusion:
 
-Bots are extremely difficult to solve. The best thing against them is always the begining. Stop the chances of them from even getting through the door and spreading. (like roaches.) 
+Bots are extremely difficult to solve. The best thing against them is always prevention. Stop the chances of them from even getting through the door and spreading. (like roaches.) 
 
 ### LAYER 1 - PREVENTION
 1. Keeping all systems patched and updated keeps most bot and malware exploits away as most bot malware knows to exploit vulnerabilities not yet patched.
@@ -1106,14 +1106,14 @@ This is mostly what users on the network can prevent themselves from doing to pr
 - Network Traffic Analysis: Looks for beaconing patterns, unusual outbound connections and traffic to unknown IP'S
 
 - DNS Monitoring:
-This is where bots like to used DNS to locate thie C2 server. Seeing unusual DNS queries are a major red flag.
+This is where bots like to use DNS to locate their C2 server. Seeing unusual DNS queries are a major red flag.
 
 - SIEM (Security Information and Event Management) 
 Focuses and logs everything to correlate suspicious patterns.
 
 ### LAYER 3 Containment (Limiting the radius of attack)
 
-- Network Segmentation (Seperation)
+- Network Segmentation (Separation)
 
 - Zero Trust (Verify Everything)
 
@@ -1125,8 +1125,8 @@ Focuses and logs everything to correlate suspicious patterns.
 
 1. Isolate
 2. Contain
-DONT SHUTDOWN
-(Preserve Memory Forenics)
+DO NOT SHUT DOWN
+(Preserve Memory Forensics)
 3. Investigate what it connects to. (What machines are talking to the infected.)
 4. Assume worst.
 Assume lateral movement has happened.
@@ -1151,13 +1151,13 @@ Label: PortScan, Other Destination Ports: (Too much! Please see 'concat_RFC.ipyn
 Port 80: Standard HTTP
 Port 123: NTP (Network Timed Protocol)
 
-Portscan goes to every to every port knocks on the door and see's whats open and what it can tell the attacker it can get its hands on. Port 123 only has one account of it therefor not enough data however NTP is sometimes a subject of an attack by DdoS, bot and Infiltration so it could be potentially an attack.
+PortScan probes every port, checking which ones are open and what it can tell the attacker it can get its hands on. Port 123 only has one account of it therefor not enough data however NTP is sometimes a subject of an attack by DDoS, Bot, and Infiltration attacks, so it could potentially be related.
 
-The problem with looking at Port Scan from this direction is Port Scan knocks on all doors so other destinations is just all over the place which makes 123 port most likely an outlier. Port 80 being hit 373 at port 80 isn't that much data and I dont believe tells us much, other than its potential that the first warning of attack could begin in port 80.
+The problem with looking at Port Scan from this direction is Port Scan knocks on all doors so other destinations is just all over the place which makes 123 port most likely an outlier. Port 80 being hit 373 at port 80 isn't that much data and I don't believe it tells us much, other than its potential that the first warning of attack could begin in port 80.
 
-What should be focused on now is what happened after then inital portscan, what happens next is the actual attack, also why I think this dataset could drastically improve more if there were time stamps of the networks movement. 
+What should be focused on now is what happened after then inital portscan, what happens next is the actual attack, also why I think this dataset could drastically improve if there were timestamps of the networks movement. 
 
-You cant prevent portscanning, but you can prevent the attack.
+You can't prevent port scanning, but you can prevent the attack.
 
 -----
 # DDoS
@@ -1174,12 +1174,12 @@ dynamic/ephemeral port range (49152–65535)
 # DDoS Conclusion
 For wild ports like '64869', '64873', '27636' express immediate concern these ports typically have no assignment so seeing something that far off is an immediate red flag.
 
-Port 80 being the most common is of no suprise, DDoS is looking to be expensive to the servers attention and looking to drain its attention to the attack, slowing down and crashing the entire network when it can.Its also using a port for HTTP and not HTTPS so it doesnt need to go through encryption so it can spam faster. 
+Port 80 being the most common is of no suprise, DDoS is looking to be expensive to the servers attention and looking to drain its attention to the attack, slowing down and crashing the entire network when it can.It's also using a port for HTTP and not HTTPS so it doesnt need to go through encryption so it can spam faster. 
 
 ## LAYER 1 Absorb
 
 - CDN (Content Delivery Network)
-if possible spread traffic across hunres of severs globally so no single server gets overwhelmed making the DDoS sucessful.
+if possible spread traffic across hundreds of servers globally so no single server gets overwhelmed making the DDoS successful.
 
 - Load Balancers
 This is a distributer from incoming traffic across multiple servers to prevent the DDoS from centralizing against one port and overwhelming the server, this offsets the load.
@@ -1190,13 +1190,13 @@ Simply if possible you have more capacity than an attacker can flood.
 ## Layer 2 Filtering
 
 - DDoS scrubbing centers 
-Traffic gets routed through a cleaning center that strips malicious requests before getting foward as legitimate ones
+Traffic gets routed through a cleaning center that strips malicious requests before forwarding legitimate ones
 
 - Rate Limiting
 You can have the network cap at how many requests one IP can make per second limiting the chances of the network being overwhelmed. (Like a DDoS attack)
 
 - IP Reputation filtering
-Blocking knonwn malicious IP'S and botnets automatically.
+Blocking known malicious IP'S and botnets automatically.
 
 - Geo Blocking
 If an attack traffic comes from specific countries that are not known for being allowed on the network we can restrict and block off that countries capability to become apart of our traffic entirely.
@@ -1207,9 +1207,9 @@ If an attack traffic comes from specific countries that are not known for being 
 Alerts if normal traffic deviates from its normal path.
 
 - Traffic analysis 
-Identify patterns that indicate floddinng behavior.
+Identify patterns that indicate flooding behavior.
 
-- SEIM alert
+- SIEM alert
 Automating alerting thresholds have been exceeded.
 
 ## Layer 4 Specialized DDoS Protection Services
@@ -1220,7 +1220,7 @@ Automating alerting thresholds have been exceeded.
 
 - Akamai
 
-## Layer 5 Architenture
+## Layer 5 Architecture
 
 - Anycast routing
 spreads attack traffic across multiple data centers globally
@@ -1228,11 +1228,11 @@ spreads attack traffic across multiple data centers globally
 - Microservices
 if one service goes down others stay up. (GCP, AWS, AZURE)
 
-- Auto scalling
-Automatic spin up of more servers when traffik spikes
+- Auto scaling
+Automatic spin up of more servers when traffic spikes
 
-- Redunant ISP connections
-Multipe internet connections so one gets flodded doesnt take down the whole operation.
+- Redundant ISP connections
+Multiple internet connections so if one gets flooded it doesn't take down the whole operation.
 
 
 
@@ -1246,12 +1246,12 @@ Port 21: (OUTDATED MUST BE CLOSED) Legacy FTP
 Port 80: Basic HTTP
 
 ## FTP-PATATOR Conclusion
-Port 21 is a very outdated file transfor protocol that has very little use in 2026 but is often still used by companies today like government, healthcare and old 2000's genoration companies that still havent replaced old hardware or closed the port entirely.
+Port 21 is a very outdated file transfer protocol that has very little use in 2026 but is often still used by companies today like government, healthcare and old 2000s generation companies that still havent replaced old hardware or closed the port entirely.
 
 Extremely obsolete and needs to be shut closed.
 
-However this doesnt completetly cover Patator as a whole. Patator is a brute force tool that systematically tries a bunch of different combinations until it cracks your username and password.
-Pataor is not limited to only FTP. 
+However this doesn't completely cover Patator as a whole. Patator is a brute force tool that systematically tries a bunch of different combinations until it cracks your username and password.
+Patator is not limited to only FTP. 
 
 (Think of this as trying every combination in a combination lock.)
 
@@ -1261,7 +1261,7 @@ Finally this FTP-Patator will then log in for full FTP access.
 
 - Close Port 21 entirely
 - Migrate to SFTP on port 22
-- Implement account lockout polices
+- Implement account lockout policies
 - Rate limit login attempts
 - If port 21 must stay open whitelist trusted IPs only
 
@@ -1289,11 +1289,11 @@ Gives attacker access to:
 (hides presence within machine)
 
 
-Entire machine is compromised once SSH-Parator is sucessfull.
+Entire machine is compromised once SSH-Patator is successful.
 
 ### What to do
 
-- Install 2nd Authentification
+- Install 2-Factor Authentication
 - Port knocking
 Until the port is needed and a sequence of ports are hit the port stays entirely closed.
 - Fail2ban
@@ -1311,13 +1311,13 @@ Label: DoS slowloris, Other Destination Ports: []
 Port 80: Basic HTTP
 
 ## Dos slowloris conclusion:
-Unlike a normal DdoS attack that floods you, is obvious and just got for the objective 
+Unlike a normal DDoS attack that floods you, is obvious and just got for the objective 
 its looking to do and harm. 'Dos slowloris' is strategic more silent and harder to see. It slowly
 bombs the network to avoid detection using very little bandwidth.
 
 Slowloris opens many connections to the server sending partial incomplete requests making the server wait thinking the complete request will come to complete it.
 
-This drastically limits the connection slots haulting anyone else from using the network.
+This drastically limits the connection slots halting anyone else from using the network.
 
 ### What to do
 
@@ -1325,7 +1325,7 @@ This drastically limits the connection slots haulting anyone else from using the
 - Limit connections per Ip
 (limits one source from holding too many connections with the network)
 - Load balancers
-Distributes and manages connections much more effienectly.
+Distributes and manages connections much more efficiently.
 - Nginx 
 - Cloudflare
 
@@ -1353,7 +1353,7 @@ Slowhttptest is the same as slowloris but comes with more, it uses more techniqu
 - Limit connections per Ip
 (limits one source from holding too many connections with the network)
 - Load balancers
-Distributes and manages connections much more effienectly.
+Distributes and manages connections much more efficiently.
 - Nginx 
 - Cloudflare
 
@@ -1377,7 +1377,7 @@ Same as the rest.
 - CAPTCHA
 (Humans arent Dos attacks.)
 - IP reputation filtering
-- Cloudfare or WAP
+- Cloudflare or WAF
 - Load Balancing 
 - Connection timeout settings 
 
@@ -1389,7 +1389,7 @@ Label: DoS GoldenEye, Other Destination Ports: []
 Port 80: Basic HTTP
 
 ## DoS GoldenEye Conclusion:
-Combination of Hulk and Lowris.
+Combination of Hulk and Slowloris.
 
 Hulk - Sending unique request generation
 
@@ -1400,7 +1400,7 @@ Same as all the rest.
 - WAF
 - Rate limiting
 - Connection timeouts
-- Cloudfare
+- Cloudflare
 - Nginx
 - IP reputation
 - CAPTCHA
@@ -1427,7 +1427,7 @@ memory to fulfill the request, unknowingly handing over whatever sensitive data 
 stored there at the time. This could include passwords, private encryption keys, 
 and session tokens.
 
-Its almost as 'Hearbleed' is the pirate in a sea of SSL data
+It's almost as if 'Heartbleed' is the pirate in a sea of SSL data
 
 Port 444 only recording 11 hits is expected. Heartbleed is not a flood attack, 
 it is a precise surgical strike. One successful hit can expose everything, 
@@ -1439,7 +1439,7 @@ attack is recorded, the better the chance the model can see it for the future.
 - Patch OpenSSL immediately to the latest version
 - Revoke and reissue all SSL certificates
 - Rotate all passwords and session tokens that may have been exposed
-- Update all software dependant on the vulnerable OpenSSL version
+- Update all software dependent on the vulnerable OpenSSL version
 - Implement WAF rules to detect and block Heartbleed exploitation attempts
 
 
@@ -1452,18 +1452,18 @@ Port 80: Basic HTTP
 
 ## Web Attack � Brute Force Conclusion:
 
-Exaclty like 'FTP-PATATOR and 'SSH-Patator' but web based and brutal.
+Exactly like 'FTP-PATATOR and 'SSH-Patator' but web based and brutal.
 It tries every combination for either username or password or both until its broken.
 
 ### What to do
 Same as 'FTP-PATATOR and 'SSH-Patator' but for the website.
 
-- Install 2nd Authentification
+- Install 2-Factor Authentication
 - Port knocking
 - Fail2ban
 - Rate Limiting
 - IP whitelisting
-- Implement account lockout polices
+- Implement account lockout policies
 - CAPTCHA
 
 -----
@@ -1476,9 +1476,9 @@ Port 80: Basic HTTP
 
 ## Web Attack � XSS Conclusion:
 
-XXS (Cross Site Scripting)
+XSS (Cross-Site Scripting)
 
-This is when the attacker injects malicious Javascript into a webpage, the victim goes to the website and accidentally excutes the javascript harming their machine.
+This is when the attacker injects malicious Javascript into a webpage, the victim goes to the website and accidentally executes the JavaScript harming their machine.
 
 This can lead to potential:
 
@@ -1507,8 +1507,8 @@ Label: Web Attack � Sql Injection, Other Destination Ports: []
 Port 80: Basic HTTP
 
 ## Web Attack � Sql Injection Conclusion
-Same exact concept as 'Web Attack � XSS' but in SQL this time however actually tagreting the database
-instead of the user and the machine. Steals, modifies, destorys data.
+Same exact concept as 'Web Attack � XSS' but in SQL this time however actually targeting the database
+instead of the user and the machine. Steals, modifies, destroys data.
 
 - Attacker accesses entire database
 - Every user account
@@ -1531,7 +1531,7 @@ Database never sees inputs as executable code.
 
 # Thoughts
 
-I understood that you cant just close ports in the begining of this to solve all your problems even though, some of the best network protection you can do it, is the port being used? No? Close. However I was expecting at least more than one suggestion was going to be close a port its not needed. 
+I understood that you can't just close ports at the beginning of this to solve all your problems even though, some of the best network protection you can do it, is the port being used? No? Close. However I was expecting at least more than one suggestion was going to be close a port its not needed. 
 
 # Conclusion:
 
@@ -1543,7 +1543,7 @@ Infiltration
 - Least Privilege
 
 Bot
-- Network Segmentation (Seperation)
+- Network Segmentation (Separation)
 - Zero Trust (Verify Everything)
 - Least Privilege (Only what you need)
 - Firewall Rules (Block the unknown when can.)
@@ -1555,20 +1555,20 @@ DDoS
 spreads attack traffic across multiple data centers globally
 - Microservices
 if one service goes down others stay up. (GCP, AWS, AZURE)
-- Auto scalling
-Automatic spin up of more servers when traffik spikes
-- Redunant ISP connections
-Multipe internet connections so one gets flodded doesnt take down the whole operation.
+- Auto scaling
+Automatic spin up of more servers when traffic spikes
+- Redundant ISP connections
+Multiple internet connections so if one gets flooded it doesn't take down the whole operation.
 
 FTP-Patator
 - Close Port 21 entirely
 - Migrate to SFTP on port 22
-- Implement account lockout polices
+- Implement account lockout policies
 - Rate limit login attempts
 - If port 21 must stay open whitelist trusted IPs only
 
 SSH-Patator
-- Install 2nd Authentification
+- Install 2-Factor Authentication
 - Port knocking
 Until the port is needed and a sequence of ports are hit the port stays entirely closed.
 - Fail2ban
@@ -1583,7 +1583,7 @@ Dos slowloris
 - Limit connections per Ip
 (limits one source from holding too many connections with the network)
 - Load balancers
-Distributes and manages connections much more effienectly.
+Distributes and manages connections much more efficiently.
 - Nginx 
 - Cloudflare
 
@@ -1592,7 +1592,7 @@ DoS Slowhttptest
 - Limit connections per Ip
 (limits one source from holding too many connections with the network)
 - Load balancers
-Distributes and manages connections much more effienectly.
+Distributes and manages connections much more efficiently.
 - Nginx 
 - Cloudflare
 
@@ -1601,7 +1601,7 @@ DoS Hulk
 - CAPTCHA
 (Humans arent Dos attacks.)
 - IP reputation filtering
-- Cloudfare or WAP
+- Cloudflare or WAF
 - Load Balancing 
 - Connection timeout settings 
 
@@ -1610,7 +1610,7 @@ DoS GoldenEye
 - WAF
 - Rate limiting
 - Connection timeouts
-- Cloudfare
+- Cloudflare
 - Nginx
 - IP reputation
 - CAPTCHA
@@ -1621,23 +1621,23 @@ Heartbleed
 - Patch OpenSSL immediately to the latest version
 - Revoke and reissue all SSL certificates
 - Rotate all passwords and session tokens that may have been exposed
-- Update all software dependant on the vulnerable OpenSSL version
+- Update all software dependent on the vulnerable OpenSSL version
 - Implement WAF rules to detect and block Heartbleed exploitation attempts
 
 Web Attack � Brute Force
-- Install 2nd Authentification
+- Install 2-Factor Authentication
 - Port knocking
 - Fail2ban
 - Rate Limiting
 - IP whitelisting
-- Implement account lockout polices
+- Implement account lockout policies
 - CAPTCHA
 
-Web Attack � XSS
-- Stealing of session cookies
-- Capture keystrokes
-- Redirect users to malicious sites
-- Hijack browser sessions
+Web Attack – XSS
+- Input sanitation (turns all special characters into plain text, no code allowed)
+- Content Security Policy (browser only executes code from approved sources)
+- HTTPOnly cookies (cookies cannot be accessed by JavaScript)
+- WAF (Web Application Firewall)
 
 Web Attack � Sql Injection Conclusion
 - Input sanitation
@@ -1648,4 +1648,11 @@ Database never sees inputs as executable code.
 (WEB APPLICATION FIREWALL)
 - HTTPS Port 443
 
+----------------------------------------------------------------------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
 
+#  Conclusion
+Date: May 18th, 2026
+
+Wrote conclusion. Still an on going project, conclusion hold what has already been done.
