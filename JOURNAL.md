@@ -1648,11 +1648,72 @@ Database never sees inputs as executable code.
 (WEB APPLICATION FIREWALL)
 - HTTPS Port 443
 
-----------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------
 Author: Antonio Gonzalez
 Environment: Python 3.13 | VS Code | Kagglehub
 
 #  Conclusion
 Date: May 18th, 2026
 
-Wrote conclusion. Still an on going project, conclusion hold what has already been done.
+Wrote conclusion. Still an on going project, conclusion holds what has already been done.
+
+------------------------------------------------------------------
+Author: Antonio Gonzalez
+Environment: MATLAB | VS Code | Python/Kagglehub
+
+# MATLAB EXPERIMENT
+
+## Overview
+Statistical analysis of the CIC-IDS-2017 Network Intrusion 
+Detection dataset using MATLAB, pulling 2.8 million rows of 
+network traffic data via KaggleHub API through a Python-MATLAB 
+bridge.
+
+## EXTRACTION
+First time extracting KaggleHub to MATLAB using python
+MATLAB cannot see Kaggle without Python, once the dataset
+of 2.8 million is in a cache were are able to extract the data
+without taking over the computers memory. 
+
+**Problem:** MATLAB is extremely variable name sensitive.
+Column headers with leading spaces and special characters 
+caused errors during CSV concatenation in the for loop.
+
+**Solution:**
+```matlab
+readtable(filePath, 'VariableNamingRule', 'preserve');
+```
+This tells MATLAB to preserve the original column headers 
+exactly as they appear in the dataset instead of 
+auto-sanitizing them.
+
+---- MATLAB NOTES ------
+% Very interesting find, these values have a space at the front of them
+% Within the dataset, however error was found, MATLAB automatically 
+% sanitizes existing values, removing the spaces. 
+% Ended up having to use 'VariableNamingRule' to clean up the error
+% ignores anything MATLAB dislikes within the variable name.
+---- MATLAB NOTES ------
+
+
+ ## % CONCLUSION:
+
+ Normal traffic typically has more forward than backward packets.
+The dataset shows backward packets slightly exceeding forward 
+packets which could indicate data exfiltration — attackers 
+extracting more data than they send, helping them stay 
+under the radar.
+
+---- MATLAB NOTES ------
+
+% --- BWD > FWD----
+% Normal traffic has more forward than backward packets
+% could potentially be a sign of data ex-filtration
+% this attack could have the data extracting more then being
+% sent it keeping them off the radar.
+
+---- MATLAB NOTES ------
+
+## Files
+
+| `CONCAT_MATLAB_.m` | MATLAB analysis script |
