@@ -131,3 +131,5 @@ This project served as a strong foundation for understanding both the power and 
 ---
 
 *See JOURNAL.md for the full research log, INDEX.md for dataset and model documentation, and the individual day folders for all model notebooks.*
+
+

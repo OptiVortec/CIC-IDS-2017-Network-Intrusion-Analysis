@@ -1717,3 +1717,146 @@ under the radar.
 ## Files
 
 | `CONCAT_MATLAB_.m` | MATLAB analysis script |
+
+------------------------------------------------------------------
+
+Author: Antonio Gonzalez
+Environment: Python 3.13 | VS Code | Kagglehub
+
+
+# CONCAT RFC + SMOTE / SQL
+Date: June 3rd, 2026
+
+
+Goal: 
+
+Apply SQL to compare Infiltration to Heartbleed to determine low F1 Score
+
+Apply SMOTE to the CONCAT RFC model to improve detection on the rarest attack classes
+and compare findings against the SQL packet length analysis as well as remove any data leakage.
+
+Hypothesis:
+
+Data scarcity for both, however infiltration must have higher variable difference compared to BENIGN
+that makes it easier to detect than heartbleed. 
+
+## SQL Observation
+
+Infiltration:
+
+          Label  Destination Port  total_flows  avg_flow_duration  \
+0  Infiltration               444           36         78407720.5   
+
+   avg_packet_length  avg_flow_bytes_per_sec  avg_fwd_packets  \
+0         161.101292             20188.21903       830.222222   
+
+   avg_bwd_packets  avg_init_win_fwd  avg_init_win_bwd  avg_psh_flags  \
+0       829.611111       2111.166667            1732.0       0.555556   
+
+   avg_ack_flags  
+0       0.833333  
+
+heartBleed:
+
+        Label  Destination Port  total_flows  avg_flow_duration  \
+0  Heartbleed               444           11       1.106797e+08   
+
+   avg_packet_length  avg_flow_bytes_per_sec  avg_fwd_packets  \
+0        1626.602318            65902.802173      2583.727273   
+
+   avg_bwd_packets  avg_init_win_fwd  avg_init_win_bwd  avg_psh_flags  \
+0      1897.181818       2899.272727        276.454545            0.0   
+
+   avg_ack_flags  
+0       0.909091  
+
+## SQL Conclusion
+
+Heartbleed avg packet length is 10x larger than Infiltration and still more 
+unnoticeable in the predictive model than infiltration. 
+
+avg flow bytes per second is 3x more data per second
+
+avg fwd packet heartbleed is way more foward traffic 
+
+avg bwd packet infiltration is much more balanced while heartbleed is much more
+noticeable
+
+avg init win bwd heartbleed (276) is anomalously low compared to infiltration (1732), a highly suspicious server receive window asymmetry
+
+avg psh flag, heartbleed is completely 0 infiltration is 0.56
+
+Heartbleed had more noticeable variable change overall compared to infiltration despite drastically being underfitted in my model compared to infiltration beating my hypothesis. 
+
+## SQL Analysis Note
+
+Maybe the avg init win bwd and  avg psh flag that makes infiltration much more
+noticeable than heartbleed but every other factor in this makes heartbleed much more active and bigger for the model to predict rather than infiltration.
+
+I still believe this is data scarcity and more data is required in order for the model to predict these two variables more.
+
+## SMOTE CONCAT RFC Observation
+
+1. First thing I confirmed was that the SMOTE targets (8, 9, 13) were actually correct.
+Label 8 is Heartbleed (9 total samples), Label 9 is Infiltration (29 total samples),
+Label 13 is Web Attack - SQL Injection (17 total samples). These are genuinely the three
+rarest classes in the entire 2.8 million row dataset. SMOTE was pointing at the right problem.
+
+2. The first real issue wasn't SMOTE at all. The model wasn't finishing because class 0 (BENIGN)
+alone had 1.8 million training rows. Training 100 trees on 2.26 million samples with no
+parallelization or undersampling caused the model to hang and never produce output.
+The fix was adding a RandomUnderSampler after SMOTE to bring the dominant classes
+(0, 2, 4, 10) down to 50,000 each, making training actually feasible, and adding
+class_weight='balanced' to the RFC.
+
+3. Once the model ran, 8 and 9 came in at reasonable F1 scores. However, the test support
+for these classes was 2, 7, and 4 samples respectively. These scores are statistically
+meaningless at that size. One missed prediction swings the entire F1. Class 8 scoring 1.00
+just means it got 2 right, not that the model truly understands Heartbleed.
+
+4. Added class 14 (Web Attack - XSS) to SMOTE targeting it at 1000. Result barely changed,
+F1 went from 0.34 to 0.39. This confirmed that class 14's problem isn't sample count,
+it's that XSS traffic at the network flow level is nearly identical to normal HTTP traffic.
+SMOTE generating more synthetic XSS samples doesn't help when the model can't tell them
+apart in the feature space to begin with.
+
+
+# Analysis
+
+The most significant finding came from connecting the RFC results to the SQL packet
+length analysis.
+
+Heartbleed avg packet length: 1626
+Infiltration avg packet length: 161
+
+This explains the RFC behavior completely. Heartbleed has an enormous and distinctive
+packet signature because of the exploit mechanics. It asks the server to return far more
+data than it sends, producing unusually large packets. Even with only 9 real samples the
+RFC picks it up because the signal is that obvious.
+
+Infiltration on the other hand is deliberately quiet. It mimics normal HTTPS traffic on
+port 444 with small packets, slow movement, and encrypted payloads designed to avoid
+detection. The model struggles because thats exactly what the attacker intended.
+
+XSS follows the same logic. Its an application-layer attack that looks like plain HTTP
+traffic at the flow level. No anomalous packet size, no unusual port, nothing that
+sticks out in the features this dataset captures.
+
+The original hypothesis was that Infiltration would be more noticeable from packet size.
+The conclusion proved the opposite and in doing so explained why the model behaves the
+way it does across all three models (RFC, XGBOOST, PyTorch) on these classes.
+
+It isn't about how many samples you have. It's about how distinctive the network signature is.
+Heartbleed announces itself. Infiltration and XSS hide.
+
+
+# Conclusion
+
+SMOTE worked as intended and was targeting the right classes. The deeper finding is that
+for attacks like Infiltration and XSS, resampling techniques hit a ceiling set by the
+feature space itself. No amount of synthetic data can teach a model to detect an attack
+that is engineered to look like normal traffic at the network level.
+
+Classes 8, 9, 13 remain limited by the dataset. Classes 12 and 14 remain limited by
+feature overlap. The model performs well on 11 of 15 classes and the remaining 4 have
+documented and explainable reasons for their shortcomings which is a finding in itself.
