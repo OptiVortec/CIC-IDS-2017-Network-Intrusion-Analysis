@@ -20,7 +20,7 @@ Models Responses: Easily detectable through abnormal flow duration and packet co
 ----
 
 
-SQL-Injection - A web attack where malicious SQL code is inserted into input fields to manipulate a database. One of the hardest attacks to detect in this dataset due to very few samples (130) and subtle differences from normal traffic.
+SQL-Injection - A web attack where malicious SQL code is inserted into input fields to manipulate a database. One of the hardest attacks to detect in this dataset due to very few samples (21) and subtle differences from normal traffic.
 
 
 Solutions: Either more data needs to be collected against this attack or more parameters that show the intensity of this malicious attack needs
@@ -42,10 +42,10 @@ Solutions: Same as 'SQL-Injection' either more data needs to be collected agains
 Heartbleed - User to website/network: when idling computer to network sends a heartbeat to network saying it still exists on the network. This helps with things like staying logged in and not becoming logged out for too much idle time. Heartbleed is when the attacker mimics the heartbleed intercepting the network. When the attack reaches the network it sends information back out which can be things like (keys) to keep in the account or full passwords which can then be taken advantage of.
 
 
-Model's Response: It sees that port 443 is typically the only port it attacks and rather than the data flowing through multiple ports at once/ heartbleed sends a bunch of abnormal data to just this one port practically catching it every time.
+Model's Response: It sees that port 444 is typically the only port it attacks and rather than the data flowing through multiple ports at once/ heartbleed sends a bunch of abnormal data to just this one port practically catching it every time.
 
 
-Attack Port: 443
+Attack Port: 444
 
 
 Solutions: SSL encryption (Secure Socket Layer) if not possible or too many users an idle time duration that kicks the user from the network can help reduce user count to help SSL as well as protect the user's data.
